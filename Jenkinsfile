@@ -1,5 +1,5 @@
 pipeline {
-    agent master
+    agent any
 
     environment {
         JENKINS_URL = 'http://localhost:8080'
