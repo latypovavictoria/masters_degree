@@ -17,8 +17,8 @@ pipeline {
         stage('Install Python Requirements') {
             steps {
                 bat '''
-                python -m pip install --upgrade pip
-                pip install requests
+                python3 -m pip install --upgrade pip
+                pip3 install requests
                 '''
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Run Security Check') {
             steps {
                 bat '''
-                python security_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%"
+                python3 security_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%"
                 '''
             }
         }
