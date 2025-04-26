@@ -16,18 +16,35 @@ pipeline {
 
         stage('Install Python Requirements') {
             steps {
-                bat '''
-                python3 -m pip install --upgrade pip
-                pip3 install requests
-                '''
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            python3 -m pip install --upgrade pip
+                            pip3 install requests
+                        '''
+                    } else {
+                        bat '''
+                            python -m pip install --upgrade pip
+                            pip install requests
+                        '''
+                    }
+                }
             }
         }
 
         stage('Run Security Check') {
             steps {
-                bat '''
-                python3 security_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%"
-                '''
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            python3 security_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN"
+                        '''
+                    } else {
+                        bat '''
+                            python security_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%"
+                        '''
+                    }
+                }
             }
         }
 
