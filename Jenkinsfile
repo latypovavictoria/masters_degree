@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'linux-docker-agent' }
 
     environment {
         JENKINS_URL = 'http://localhost:8080'
