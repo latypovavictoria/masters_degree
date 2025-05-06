@@ -42,9 +42,7 @@ def create_junit_report():
         secret_case.system_out = secret["line_content"]
         suite.add_testcase(secret_case)
 
-    with open("result.xml", "w") as f:
-        suite.write(f)
-
+    suite.write("result.xml")
     print("[INFO] JUnit report 'result.xml' generated successfully.")
 
 
