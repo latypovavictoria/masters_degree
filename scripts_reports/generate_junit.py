@@ -45,7 +45,7 @@ def create_junit_report():
     score_case.system_out = f"CVSS Score: {score} ({classification})"
 
     if score >= 7:
-        score_case.add_failure_info(message=f"Critical CVSS score detected: {score} ({classification})")
+        score_case.failure = Failure(message=f"Critical CVSS score detected: {score} ({classification})")
 
     suite.add_testcase(score_case)
 
@@ -53,14 +53,14 @@ def create_junit_report():
         vuln_case = TestCase(f"Plugin: {vuln['plugin']}")
         if vuln.get("cvss_score", 0) >= 7:
             message = f"{vuln['description']} (CVSS: {vuln['cvss_score']})"
-            vuln_case.add_failure_info(message=message)
+            vuln_case.failure = Failure(message=message)
         vuln_case.system_out = json.dumps(vuln, indent=2)
         suite.add_testcase(vuln_case)
 
     for secret in data.get("secrets", []):
         secret_case = TestCase("Secrets Detection")
         message = f"Secret found in line {secret['line']}"
-        secret_case.add_failure_info(message=message)
+        secret_case.failure = Failure(message=message)
         secret_case.system_out = secret["line_content"]
         suite.add_testcase(secret_case)
 
