@@ -99,7 +99,7 @@ pipeline {
                     } else {
                         bat '''
                             mkdir allure-results
-                            cp result.xml allure-results
+                            copy result.xml allure-results
                         '''
                     }
                     allure([
