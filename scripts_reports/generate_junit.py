@@ -45,7 +45,7 @@ def create_junit_report():
     score_case.system_out = f"CVSS Score: {score} ({classification})"
 
     if score >= 7:
-        score_case.failure = Failure(message=f"Critical CVSS score detected: {score} ({classification})")
+        score_case.result = Failure(message=f"Critical CVSS score detected: {score} ({classification})")
 
     suite.add_testcase(score_case)
 
