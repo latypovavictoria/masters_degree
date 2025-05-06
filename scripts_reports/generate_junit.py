@@ -16,6 +16,21 @@ def load_analysis_results(filepath="jenkinsfile_analysis.json"):
         sys.exit(1)
 
 
+def classify_cvss(cvss_score):
+    if cvss_score == 0.0:
+        return "Нет уязвимости"
+    elif 0.1 <= cvss_score <= 3.9:
+        return "Низкая"
+    elif 4.0 <= cvss_score <= 6.9:
+        return "Средняя"
+    elif 7.0 <= cvss_score <= 8.9:
+        return "Высокая"
+    elif 9.0 <= cvss_score <= 10.0:
+        return "Критическая"
+    else:
+        return "Неверный балл"
+
+
 def create_junit_report():
     data = load_analysis_results()
 
@@ -24,7 +39,14 @@ def create_junit_report():
     score_case = TestCase("CVSS Score Analysis")
     score = data.get("cvss_score", "N/A")
     color = data.get("cvss_color", "N/A")
-    score_case.system_out = f"CVSS Score: {score} ({color})"
+
+    classification = classify_cvss(score)
+
+    score_case.system_out = f"CVSS Score: {score} ({classification})"
+
+    if score >= 7:
+        score_case.add_failure_info(message=f"Critical CVSS score detected: {score} ({classification})")
+
     suite.add_testcase(score_case)
 
     for vuln in data.get("vulnerabilities", []):
