@@ -95,11 +95,13 @@ pipeline {
                         sh '''
                             mkdir allure-results
                             cp result.xml allure-results
+                            cp plugin_vuln_report.xml allure-results
                         '''
                     } else {
                         bat '''
                             mkdir allure-results
                             copy result.xml allure-results
+                            copy plugin_vuln_report.xml allure-results
                         '''
                     }
                     allure([
@@ -108,6 +110,7 @@ pipeline {
                             results: [[path: 'allure-results']]
                     ])
                 }
+                junit 'plugin_vuln_report.xml'
                 junit 'result.xml'
             }
         }
