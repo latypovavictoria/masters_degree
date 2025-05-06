@@ -7,6 +7,7 @@ pipeline {
         JENKINS_TOKEN = credentials('token_admin')
     }
 
+
     parameters {
         string(name: 'API_KEY', defaultValue: '', description: 'API KEY for NVD')
         string(name: 'CHECK_JENKINSFILE_PATH', defaultValue: 'Jenkinsfile', description: 'Path to Jenkinsfile for analysis')
@@ -21,34 +22,63 @@ pipeline {
 
         stage('Install Requirements') {
             steps {
-                sh '''
-                    python3 -m pip install --upgrade pip
-                    pip3 install requests junit-xml
-                '''
+                if (isUnix()) {
+                    sh '''
+                        python3 -m pip install --upgrade pip
+                        pip3 install requests junit-xml
+                    '''
+                }
+                else {
+                    bat '''
+                          python -m pip install --upgrade pip
+                          pip install requests junit-xml
+                    '''
+                }
             }
         }
 
         stage('Run Plugin CVE Check') {
             steps {
-                sh '''
-                    python3 plugin_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN" "${API_KEY}"
-                '''
+                if (isUnix()) {
+                    sh '''
+                        python3 plugin_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN" "${API_KEY}"
+                    '''
+                }
+                else {
+                    bat '''
+                          python plugin_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%" "%API_KEY%"
+                    '''
+                }
             }
         }
 
         stage('Analyze Jenkinsfile') {
             steps {
-                sh '''
-                    python3 analyze_jenkinsfile.py "${CHECK_JENKINSFILE_PATH}"
-                '''
+                if (isUnix()) {
+                    sh '''
+                        python3 analyze_jenkinsfile.py "${CHECK_JENKINSFILE_PATH}"
+                    '''
+                }
+                else {
+                    bat '''
+                          python analyze_jenkinsfile.py "%CHECK_JENKINSFILE_PATH%"
+                    '''
+                }
             }
         }
 
         stage('Generate JUnit Report') {
             steps {
-                sh '''
-                    python3 generate_junit.py
-                '''
+                if (isUnix()) {
+                    sh '''
+                        python3 generate_junit.py
+                    '''
+                }
+                else {
+                    bat '''
+                          python generate_junit.py
+                    '''
+                }
             }
         }
 
