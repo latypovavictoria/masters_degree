@@ -91,15 +91,11 @@ pipeline {
         stage('Publish Allure Report') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                            allure generate ./ -o allure-report --clean
-                        '''
-                    } else {
-                        bat '''
-                          allure generate ./ -o allure-report --clean
-                        '''
-                    }
+                    allure([
+                            includeProperties: false,
+                            jdk: '',
+                            results: [[path: 'allure-results']]
+                    ])
                 }
                 junit 'result.xml'
             }
