@@ -22,62 +22,66 @@ pipeline {
 
         stage('Install Requirements') {
             steps {
-                if (isUnix()) {
-                    sh '''
+                script {
+                    if (isUnix()) {
+                        sh '''
                         python3 -m pip install --upgrade pip
                         pip3 install requests junit-xml
                     '''
-                }
-                else {
-                    bat '''
+                    } else {
+                        bat '''
                           python -m pip install --upgrade pip
                           pip install requests junit-xml
                     '''
+                    }
                 }
             }
         }
 
         stage('Run Plugin CVE Check') {
             steps {
-                if (isUnix()) {
-                    sh '''
+                script {
+                    if (isUnix()) {
+                        sh '''
                         python3 plugin_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN" "${API_KEY}"
                     '''
-                }
-                else {
-                    bat '''
+                    } else {
+                        bat '''
                           python plugin_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%" "%API_KEY%"
                     '''
+                    }
                 }
             }
         }
 
         stage('Analyze Jenkinsfile') {
             steps {
-                if (isUnix()) {
-                    sh '''
+                script {
+                    if (isUnix()) {
+                        sh '''
                         python3 analyze_jenkinsfile.py "${CHECK_JENKINSFILE_PATH}"
                     '''
-                }
-                else {
-                    bat '''
+                    } else {
+                        bat '''
                           python analyze_jenkinsfile.py "%CHECK_JENKINSFILE_PATH%"
                     '''
+                    }
                 }
             }
         }
 
         stage('Generate JUnit Report') {
             steps {
-                if (isUnix()) {
-                    sh '''
+                script {
+                    if (isUnix()) {
+                        sh '''
                         python3 generate_junit.py
                     '''
-                }
-                else {
-                    bat '''
+                    } else {
+                        bat '''
                           python generate_junit.py
                     '''
+                    }
                 }
             }
         }
