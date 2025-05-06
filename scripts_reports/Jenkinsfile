@@ -90,15 +90,21 @@ pipeline {
 
         stage('Publish Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: '']]
-                junit 'scripts_reports/security_result.xml'
+                script {
+                    allure([
+                            includeProperties: false,
+                            jdk: '',
+                            results: [[path: 'allure-results']]
+                    ])
+                }
+                junit 'result.xml'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'scripts_reports/*.json', fingerprint: true
+            archiveArtifacts artifacts: '*.json', fingerprint: true
         }
     }
 }
