@@ -43,11 +43,11 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        python3 plugin_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN" "${API_KEY}"
+                        python3 scripts_reports/plugin_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN" "${API_KEY}"
                     '''
                     } else {
                         bat '''
-                          python plugin_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%" "%API_KEY%"
+                          python scripts_reports/plugin_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%" "%API_KEY%"
                     '''
                     }
                 }
@@ -59,11 +59,11 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        python3 analyze_jenkinsfile.py "${CHECK_JENKINSFILE_PATH}"
+                        python3 scripts_reports/analyze_jenkinsfile.py "${CHECK_JENKINSFILE_PATH}"
                     '''
                     } else {
                         bat '''
-                          python analyze_jenkinsfile.py "%CHECK_JENKINSFILE_PATH%"
+                          python scripts_reports/analyze_jenkinsfile.py "%CHECK_JENKINSFILE_PATH%"
                     '''
                     }
                 }
@@ -75,11 +75,11 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        python3 generate_junit.py
+                        python3 scripts_reports/generate_junit.py
                     '''
                     } else {
                         bat '''
-                          python generate_junit.py
+                          python scripts_reports/generate_junit.py
                     '''
                     }
                 }
@@ -89,14 +89,14 @@ pipeline {
         stage('Publish Allure Report') {
             steps {
                 allure includeProperties: false, jdk: '', results: [[path: '']]
-                junit 'security_result.xml'
+                junit 'scripts_reports/security_result.xml'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '*.json', fingerprint: true
+            archiveArtifacts artifacts: 'scripts_reports/*.json', fingerprint: true
         }
     }
 }
