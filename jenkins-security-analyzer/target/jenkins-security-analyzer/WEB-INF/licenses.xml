@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<l:dependencies xmlns:l='licenses' groupId='com.example.jenkins' artifactId='jenkins-security-analyzer' version='1.0.0'><l:dependency name='Jenkins Security Analyzer' groupId='com.example.jenkins' artifactId='jenkins-security-analyzer' version='1.0.0' url='https://github.com/your-repo/jenkins-security-analyzer'><l:description>The Jenkins Plugins Parent POM Project</l:description></l:dependency></l:dependencies>

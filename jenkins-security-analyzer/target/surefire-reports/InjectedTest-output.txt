@@ -1,0 +1,68 @@
+May 08, 2025 8:07:52 PM org.jvnet.hudson.test.WarExploder explode
+INFO: Exploding C:\Users\user\.m2\repository\org\jenkins-ci\main\jenkins-war\2.361.4\jenkins-war-2.361.4.war into C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\jenkins-for-test
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.handler.ContextHandler setContextPath
+WARNING: Empty contextPath
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.Server doStart
+INFO: jetty-10.0.15; built: 2023-04-11T17:25:14.480Z; git: 68017dbd00236bb7e187330d7585a059610f661d; jvm 11.0.27+8-LTS-232
+May 08, 2025 8:07:55 PM org.eclipse.jetty.webapp.StandardDescriptorProcessor visitServlet
+INFO: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: Session workerName=node0
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+INFO: Started o.e.j.w.WebAppContext@1dc76fa1{Jenkins v2.361.4,/,file:///C:/Program%20Files/Jenkins/masters_degree/jenkins-security-analyzer/target/jenkins-for-test/,AVAILABLE}{C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\jenkins-for-test}
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@f72203{HTTP/1.1, (http/1.1)}{localhost:49310}
+May 08, 2025 8:07:55 PM org.eclipse.jetty.server.Server doStart
+INFO: Started Server@4f63e3c7{STARTING}[10.0.15,sto=0] @4875ms
+May 08, 2025 8:07:55 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started initialization
+May 08, 2025 8:07:55 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\sshd.jpi
+May 08, 2025 8:07:56 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\javax-activation-api.jpi
+May 08, 2025 8:07:56 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\javax-mail-api.jpi
+May 08, 2025 8:07:56 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\bouncycastle-api.jpi
+May 08, 2025 8:07:56 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\instance-identity.jpi
+May 08, 2025 8:07:56 PM hudson.PluginManager considerDetachedPlugin
+INFO: Loading a detached plugin as a dependency: C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\tmp\jenkins11328752034726616385\plugins\trilead-api.jpi
+May 08, 2025 8:07:57 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Listed all plugins
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Prepared all plugins
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started all plugins
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Augmented all extensions
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: System config loaded
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: System config adapted
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Loaded all jobs
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Configuration for all jobs updated
+May 08, 2025 8:08:02 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Completed initialization
+May 08, 2025 8:08:02 PM org.eclipse.jetty.server.Server doStart
+INFO: jetty-10.0.15; built: 2023-04-11T17:25:14.480Z; git: 68017dbd00236bb7e187330d7585a059610f661d; jvm 11.0.27+8-LTS-232
+May 08, 2025 8:08:02 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: Session workerName=node0
+May 08, 2025 8:08:02 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+INFO: Started o.e.j.s.ServletContextHandler@574b7f4a{/,null,AVAILABLE}
+May 08, 2025 8:08:02 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@32177fa5{HTTP/1.1, (http/1.1)}{0.0.0.0:49324}
+May 08, 2025 8:08:02 PM org.eclipse.jetty.server.Server doStart
+INFO: Started Server@6ab4a5b{STARTING}[10.0.15,sto=0] @12289ms
+May 08, 2025 8:08:09 PM org.eclipse.jetty.server.Server doStop
+INFO: Stopped Server@4f63e3c7{STOPPING}[10.0.15,sto=0]
+May 08, 2025 8:08:09 PM org.eclipse.jetty.server.AbstractConnector doStop
+INFO: Stopped ServerConnector@f72203{HTTP/1.1, (http/1.1)}{localhost:0}
+May 08, 2025 8:08:09 PM org.eclipse.jetty.server.handler.ContextHandler doStop
+INFO: Stopped o.e.j.w.WebAppContext@1dc76fa1{Jenkins v2.361.4,/,file:///C:/Program%20Files/Jenkins/masters_degree/jenkins-security-analyzer/target/jenkins-for-test/,STOPPED}{C:\Program Files\Jenkins\masters_degree\jenkins-security-analyzer\target\jenkins-for-test}
+May 08, 2025 8:08:09 PM hudson.lifecycle.Lifecycle onStatusUpdate
+INFO: Stopping Jenkins
+May 08, 2025 8:08:09 PM hudson.lifecycle.Lifecycle onStatusUpdate
+INFO: Jenkins stopped

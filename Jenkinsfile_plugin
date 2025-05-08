@@ -1,0 +1,30 @@
+pipeline {
+    agent { label 'linux-docker-agent' }
+
+    environment {
+        JENKINS_URL = 'http://localhost:8080'
+        JENKINS_USER = 'admin'
+        JENKINS_TOKEN = credentials('token_admin')
+    }
+
+    parameters {
+        string(name: 'API_KEY', defaultValue: '', description: 'API KEY for NVD')
+        string(name: 'CHECK_JENKINSFILE_PATH', defaultValue: 'Jenkinsfile', description: 'Path to Jenkinsfile for analysis')
+    }
+
+    stages {
+        stage('Security Scan') {
+            steps {
+                securityAnalyzer(
+                    analyzeJenkinsfile: true,
+                    checkPlugins: true,
+                    jenkinsfilePath: 'Jenkinsfile',
+                    jenkinsUrl: env.JENKINS_URL,
+                    jenkinsUser: env.JENKINS_USER,
+                    jenkinsToken: env.JENKINS_TOKEN,
+                    nvdApiKey: "${API_KEY}"
+                )
+            }
+        }
+    }
+}

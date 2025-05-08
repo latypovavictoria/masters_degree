@@ -1,0 +1,32 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="Security Analysis Configuration">
+        <f:entry title="Analyze Jenkinsfile" field="analyzeJenkinsfile">
+            <f:checkbox default="true"/>
+        </f:entry>
+
+        <f:entry title="Jenkinsfile Path" field="jenkinsfilePath">
+            <f:textbox default="Jenkinsfile"/>
+        </f:entry>
+
+        <f:entry title="Check Plugins for CVEs" field="checkPlugins">
+            <f:checkbox default="true"/>
+        </f:entry>
+
+        <f:entry title="Jenkins URL" field="jenkinsUrl">
+            <f:textbox default="${rootURL}"/>
+        </f:entry>
+
+        <f:entry title="Jenkins User" field="jenkinsUser">
+            <f:textbox/>
+        </f:entry>
+
+        <f:entry title="Jenkins Token" field="jenkinsToken">
+            <f:password/>
+        </f:entry>
+
+        <f:entry title="NVD API Key (optional)" field="nvdApiKey">
+            <f:textbox/>
+        </f:entry>
+    </f:section>
+</j:jelly>

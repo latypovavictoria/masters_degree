@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Group-Id: com.example.jenkins
+Artifact-Id: jenkins-security-analyzer
+Short-Name: jenkins-security-analyzer
+Long-Name: Jenkins Security Analyzer
+Url: https://github.com/your-repo/jenkins-security-analyzer
+Plugin-Version: 1.0.0
+Hudson-Version: 2.361.4
+Jenkins-Version: 2.361.4
+Plugin-Dependencies: workflow-job:2.42,credentials:2.6.1,junit:1.57
+Plugin-Developers: Your Name:your-id:your.email@example.com
+Plugin-ScmConnection: scm:git:git://github.com/your-repo/jenkins-securit
+ y-analyzer.git
+Plugin-ScmTag: HEAD
+Plugin-ScmUrl: https://github.com/your-repo/jenkins-security-analyzer
+Plugin-GitHash: 4169cf5999b63e6977e888f09b15ad098bf3a2eb
+Implementation-Build: 4169cf5999b63e6977e888f09b15ad098bf3a2eb
+Libraries: C:\Program Files\Jenkins\masters_degree\jenkins-security-anal
+ yzer\src\main\resources,C:\Program Files\Jenkins\masters_degree\jenkins
+ -security-analyzer\target\classes
+Resource-Path: C:\Program Files\Jenkins\masters_degree\jenkins-security-
+ analyzer\src\main\webapp
+

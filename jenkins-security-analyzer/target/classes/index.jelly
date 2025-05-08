@@ -1,0 +1,10 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin performs security analysis of Jenkinsfiles and installed plugins.
+    <p>Features:</p>
+    <ul>
+        <li>Jenkinsfile security analysis</li>
+        <li>Plugin vulnerability scanning</li>
+        <li>Comprehensive reporting</li>
+    </ul>
+</div>

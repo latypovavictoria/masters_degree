@@ -1,0 +1,1 @@
+Running tests for com.example.jenkins:jenkins-security-analyzer:1.0.0

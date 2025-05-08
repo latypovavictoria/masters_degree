@@ -1,0 +1,7 @@
+com\example\jenkins\SecurityAnalyzerBuilder.class
+META-INF\annotations\hudson.Extension.txt
+com\example\jenkins\SecurityAnalyzerBuilder.stapler
+com\example\jenkins\SecurityAnalyzerBuilder\DescriptorImpl\doCheckJenkinsfilePath.stapler
+META-INF\services\annotations\org.jenkinsci.Symbol
+com\example\jenkins\SecurityAnalyzerBuilder$DescriptorImpl.class
+META-INF\annotations\hudson.Extension
