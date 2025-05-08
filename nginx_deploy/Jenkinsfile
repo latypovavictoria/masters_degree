@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        HOSTS_FILE = 'hosts.yaml'
+        HOSTS_FILE = 'hosts.yml'
         JENKINS_URL = 'http://localhost:8080'
         JENKINS_USER = 'admin'
         JENKINS_TOKEN = credentials('token_admin')
@@ -40,7 +40,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Security Scan') {
             steps {
                 securityAnalyzer(
