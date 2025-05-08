@@ -21,6 +21,26 @@ pipeline {
             }
         }
 
+        stage('Install Requirements') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh '''
+                        python3 -m pip install --upgrade pip
+                        pip3 install requests junit-xml
+                        pip3 install junitparser
+                    '''
+                    } else {
+                        bat '''
+                          python -m pip install --upgrade pip
+                          pip install requests junit-xml
+                          pip install junitparser
+                    '''
+                    }
+                }
+            }
+        }
+        
         stage('Security Scan') {
             steps {
                 securityAnalyzer(
