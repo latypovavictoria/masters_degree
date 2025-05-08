@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        HOSTS_FILE = 'hosts.yml'
+        HOSTS_FILE = 'nginx_deploy/hosts.yml'
         JENKINS_URL = 'http://localhost:8080'
         JENKINS_USER = 'admin'
         JENKINS_TOKEN = credentials('token_admin')
