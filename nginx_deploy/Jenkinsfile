@@ -1,0 +1,134 @@
+pipeline {
+    agent {
+        label 'linux'
+    }
+
+    parameters {
+        string(name: 'TARGET', defaultValue: 'test.delta.sbrf.ru-nginx', description: 'Цель деплоя из файла hosts.yaml')
+        string(name: 'API_KEY', defaultValue: '', description: 'API KEY for NVD')
+        string(name: 'CHECK_JENKINSFILE_PATH', defaultValue: 'Jenkinsfile', description: 'Path to Jenkinsfile for analysis')
+    }
+
+    environment {
+        HOSTS_FILE = 'hosts.yaml'
+        JENKINS_URL = 'http://localhost:8080'
+        JENKINS_USER = 'admin'
+        JENKINS_TOKEN = credentials('token_admin')
+    }
+
+    stage('Publish Report') {
+        steps {
+            archiveArtifacts artifacts: 'security_report.json', fingerprint: true
+        }
+    }
+
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/latypovavictoria/masters_degree.git', branch: 'main'
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                securityAnalyzer(
+                        analyzeJenkinsfile: true,
+                        checkPlugins: true,
+                        jenkinsfilePath: 'Jenkinsfile',
+                        jenkinsUrl: env.JENKINS_URL,
+                        jenkinsUser: env.JENKINS_USER,
+                        jenkinsToken: env.JENKINS_TOKEN,
+                        nvdApiKey: "${API_KEY}"
+                )
+            }
+        }
+
+        stage('Publish Allure Report') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            mkdir allure-results
+                            cp result.xml allure-results
+                            cp plugin_vuln_report.xml allure-results
+                        '''
+                    } else {
+                        bat '''
+                            mkdir allure-results
+                            copy result.xml allure-results
+                            copy plugin_vuln_report.xml allure-results
+                        '''
+                    }
+                    allure([
+                            includeProperties: false,
+                            jdk: '',
+                            results: [[path: 'allure-results']]
+                    ])
+                }
+                junit 'plugin_vuln_report.xml'
+                junit 'result.xml'
+            }
+        }
+
+        stage('Parse Host Info') {
+            steps {
+                script {
+                    def parsed = readYaml file: "${env.HOSTS_FILE}"
+                    def config = parsed[params.TARGET]
+
+                    if (!config) {
+                        error "❌ Цель '${params.TARGET}' не найдена"
+                    }
+
+                    env.SSH_CONNECT = config.connect
+                    env.SSH_CRED_ID = config.credID
+                    env.DEPLOY_TYPE = config.typeDeploy
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sshagent([env.SSH_CRED_ID]) {
+                    script {
+                        switch (env.DEPLOY_TYPE) {
+                            case 'nginx':
+                                sh """
+                                    ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                        echo "[*] Перезапуск NGINX"
+                                        sudo systemctl restart nginx || sudo nginx
+                                    '
+                                """
+                                break
+                            case 'elk':
+                                sh """
+                                    ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                        echo "[*] Перезапуск ELK"
+                                        sudo systemctl restart elasticsearch
+                                        sudo systemctl restart logstash
+                                        sudo systemctl restart kibana
+                                    '
+                                """
+                                break
+                            default:
+                                error "🚫 Неизвестный тип деплоя: ${env.DEPLOY_TYPE}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Успешный деплой для ${params.TARGET}"
+        }
+        failure {
+            echo "❌ Ошибка при деплое на ${params.TARGET}"
+        }
+        always {
+            archiveArtifacts artifacts: '*.json', fingerprint: true
+        }
+    }
+}
