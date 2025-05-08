@@ -15,14 +15,7 @@ pipeline {
         JENKINS_USER = 'admin'
         JENKINS_TOKEN = credentials('token_admin')
     }
-
-    stage('Publish Report') {
-        steps {
-            archiveArtifacts artifacts: 'security_report.json', fingerprint: true
-        }
-    }
-
-
+    
     stages {
         stage('Checkout') {
             steps {
