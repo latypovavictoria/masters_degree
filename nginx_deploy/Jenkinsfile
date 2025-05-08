@@ -94,13 +94,24 @@ pipeline {
                     script {
                         switch (env.DEPLOY_TYPE) {
                             case 'nginx':
-                                sh """
-                                    ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
-                                        echo "[*] Перезапуск NGINX"
-                                        sudo systemctl restart nginx || sudo nginx
-                                    '
-                                """
+                                if (isUnix()) {
+                                        sh """
+                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                            echo "[*] Перезапуск NGINX"
+                                            sudo systemctl restart nginx || sudo nginx
+                                        '
+                                    """
+                                }
+                                else {
+                                    bat """
+                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                            echo "[*] Перезапуск NGINX"
+                                            sudo systemctl restart nginx || sudo nginx
+                                        '
+                                    """
+                                }
                                 break
+
                             case 'elk':
                                 sh """
                                     ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
