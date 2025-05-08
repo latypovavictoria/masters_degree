@@ -56,6 +56,18 @@
     </dependencies>
 
     <build>
+        <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+        <resource>
+            <directory>scripts</directory>
+            <targetPath>scripts</targetPath>
+            <includes>
+                <include>*.py</include>
+            </includes>
+        </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

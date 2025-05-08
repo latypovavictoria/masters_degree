@@ -1,2 +1,2 @@
-#Thu May 08 20:07:39 MSK 2025
+#Thu May 08 21:11:48 MSK 2025
 constructor=analyzeJenkinsfile,checkPlugins,jenkinsfilePath,jenkinsUrl,jenkinsUser,jenkinsToken,nvdApiKey

@@ -14,11 +14,11 @@ Plugin-Version: 1.0.0
 Hudson-Version: 2.361.4
 Jenkins-Version: 2.361.4
 Plugin-Dependencies: workflow-job:2.42,credentials:2.6.1,junit:1.57
-Plugin-Developers: Your Name:your-id:your.email@example.com
-Plugin-ScmConnection: scm:git:git://github.com/your-repo/jenkins-securit
- y-analyzer.git
+Plugin-Developers: Your Name:1234:your.email@example.com
+Plugin-ScmConnection: scm:git:https://github.com/jenkinsci/plugin-pom.gi
+ t/jenkins-security-analyzer
 Plugin-ScmTag: HEAD
-Plugin-ScmUrl: https://github.com/your-repo/jenkins-security-analyzer
-Plugin-GitHash: 4169cf5999b63e6977e888f09b15ad098bf3a2eb
-Implementation-Build: 4169cf5999b63e6977e888f09b15ad098bf3a2eb
+Plugin-ScmUrl: https://github.com/latypovavictoria/masters_degree.git
+Plugin-GitHash: e83bd50c7ccafecfc6f2a8f341a1fdb3a1d39ce4
+Implementation-Build: e83bd50c7ccafecfc6f2a8f341a1fdb3a1d39ce4
 

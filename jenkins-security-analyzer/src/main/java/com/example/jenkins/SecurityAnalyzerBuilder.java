@@ -16,8 +16,14 @@ import org.kohsuke.stapler.QueryParameter;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
-public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep {
+public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final boolean analyzeJenkinsfile;
     private final boolean checkPlugins;
@@ -45,16 +51,48 @@ public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep 
 
         listener.getLogger().println("Starting Security Analysis Pipeline");
 
-        if (analyzeJenkinsfile) {
-            analyzeJenkinsfile(workspace, listener, launcher);
-            generateJunitReport(workspace, listener, launcher);
-        }
+        try {
+            // Создаем директорию для скриптов
+            FilePath scriptsDir = workspace.child("scripts");
+            if (!scriptsDir.exists()) {
+                scriptsDir.mkdirs();
+                listener.getLogger().println("Created scripts directory");
+            }
 
-        if (checkPlugins) {
-            checkPlugins(workspace, listener, launcher);
-        }
+            copyScript(scriptsDir, "analyze_jenkinsfile.py", listener);
+            copyScript(scriptsDir, "generate_junit.py", listener);
+            copyScript(scriptsDir, "plugin_check.py", listener);
 
-        listener.getLogger().println("Security Analysis Pipeline Completed");
+            if (analyzeJenkinsfile) {
+                analyzeJenkinsfile(workspace, listener, launcher);
+                generateJunitReport(workspace, listener, launcher);
+            }
+
+            if (checkPlugins) {
+                checkPlugins(workspace, listener, launcher);
+            }
+
+            listener.getLogger().println("Security Analysis Pipeline Completed");
+        } catch (Exception e) {
+            listener.error("Pipeline failed: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private void copyScript(FilePath scriptsDir, String scriptName, TaskListener listener)
+            throws IOException, InterruptedException {
+        FilePath scriptFile = scriptsDir.child(scriptName);
+        if (!scriptFile.exists()) {
+            try (InputStream in = getClass().getResourceAsStream("/scripts/" + scriptName)) {
+                if (in == null) {
+                    throw new IOException("Script " + scriptName + " not found in plugin resources");
+                }
+                String content = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                scriptFile.write(content, "UTF-8");
+                scriptFile.chmod(0755); // Устанавливаем права на выполнение
+                listener.getLogger().println("Copied script: " + scriptName);
+            }
+        }
     }
 
     private void analyzeJenkinsfile(FilePath workspace, TaskListener listener, Launcher launcher)
@@ -64,8 +102,18 @@ public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep 
         FilePath script = workspace.child("scripts/analyze_jenkinsfile.py");
         FilePath jenkinsfile = workspace.child(jenkinsfilePath);
 
+        if (!script.exists()) {
+            throw new IOException("Python script not found at: " + script.getRemote());
+        }
+        if (!jenkinsfile.exists()) {
+            throw new IOException("Jenkinsfile not found at: " + jenkinsfile.getRemote());
+        }
+
+        listener.getLogger().println("Using Python script: " + script.getRemote());
+        listener.getLogger().println("Analyzing file: " + jenkinsfile.getRemote());
+
         int exitCode = launcher.launch()
-                .cmds("python", script.getRemote(), jenkinsfile.getRemote())
+                .cmds(getPythonCommand(launcher), script.getRemote(), jenkinsfile.getRemote())
                 .stdout(listener.getLogger())
                 .stderr(listener.getLogger())
                 .pwd(workspace)
@@ -82,8 +130,12 @@ public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep 
 
         FilePath script = workspace.child("scripts/generate_junit.py");
 
+        if (!script.exists()) {
+            throw new IOException("Python script not found at: " + script.getRemote());
+        }
+
         int exitCode = launcher.launch()
-                .cmds("python", script.getRemote())
+                .cmds(getPythonCommand(launcher), script.getRemote())
                 .stdout(listener.getLogger())
                 .stderr(listener.getLogger())
                 .pwd(workspace)
@@ -100,8 +152,13 @@ public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep 
 
         FilePath script = workspace.child("scripts/plugin_check.py");
 
+        if (!script.exists()) {
+            throw new IOException("Python script not found at: " + script.getRemote());
+        }
+
         int exitCode = launcher.launch()
-                .cmds("python", script.getRemote(), jenkinsUrl, jenkinsUser, jenkinsToken, nvdApiKey)
+                .cmds(getPythonCommand(launcher), script.getRemote(),
+                        jenkinsUrl, jenkinsUser, jenkinsToken, nvdApiKey)
                 .stdout(listener.getLogger())
                 .stderr(listener.getLogger())
                 .pwd(workspace)
@@ -112,7 +169,11 @@ public class SecurityAnalyzerBuilder extends Builder implements SimpleBuildStep 
         }
     }
 
-    // Getters for all fields
+    private String getPythonCommand(Launcher launcher) {
+        return launcher.isUnix() ? "python3" : "python";
+    }
+
+    // Getters
     public boolean isAnalyzeJenkinsfile() { return analyzeJenkinsfile; }
     public boolean isCheckPlugins() { return checkPlugins; }
     public String getJenkinsfilePath() { return jenkinsfilePath; }
