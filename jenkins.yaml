@@ -1,0 +1,29 @@
+jenkins:
+  systemMessage: "Jenkins настроен через JCasC"
+  securityRealm:
+    ldap:
+      configurations:
+        - server: "ldap.example.com"
+          rootDN: "dc=example,dc=com"
+          managerPasswordSecret: "${LDAP_PASSWORD}"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "USER:Overall/Read:anonymous"
+        - "USER:Job/Read:authenticated"
+  numExecutors: 2
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "git-credentials"
+              username: "git-user"
+              password: "${GIT_PASSWORD}"
+
+unclassified:
+  location:
+    url: "http://localhost:8080"
+    adminAddress: "admin@example.com"
