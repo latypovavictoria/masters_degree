@@ -98,32 +98,55 @@ pipeline {
                 }
             }
         }
+        stage('Check Logstash Availability') {
+            steps {
+                script {
+                    def logstashUrl = "http://192.168.1.28:5044"
+                    def responseCode = -1
+
+                    if (isUnix()) {
+                        responseCode = sh(
+                                script: "curl -s -o /dev/null -w '%{http_code}' '${logstashUrl}' || echo 500",
+                                returnStdout: true
+                        ).trim()
+                    } else {
+                        responseCode = bat(
+                                script: "@curl -s -o nul -w \"%%{http_code}\" \"${logstashUrl}\" || echo 500",
+                                returnStdout: true
+                        ).trim()
+                    }
+
+                    if (responseCode != "200") {
+                        error "Logstash недоступен (HTTP код: ${responseCode})"
+                    }
+                }
+            }
+        }
         stage('Send Reports to ELK') {
             steps {
                 script {
-                    def cveReport = readFile(file: 'plugin_vuln_report.xml')
-                    def cvssReport = readFile(file: 'result.xml')
-
                     def payload = [
                             build_id: env.BUILD_ID,
                             job_name: env.JOB_NAME,
-                            cve_report: cveReport,
-                            cvss_report: cvssReport,
+                            cve_report: readFile(file: 'plugin_vuln_report.xml'),
+                            cvss_report: readFile(file: 'result.xml'),
                             timestamp: new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
                     ]
 
+                    writeJSON file: 'payload.json', json: payload
                     def logstashUrl = "http://192.168.1.28:5044"
+
                     if (isUnix()) {
-                        sh '''#!/bin/sh
-                curl -X POST ${logstashUrl} \\
-                  -H 'Content-Type: application/json' \\
-                  -d '${groovy.json.JsonOutput.toJson(payload)}'
-                '''
+                        sh """
+                    curl -v -X POST '${logstashUrl}' \\
+                      -H 'Content-Type: application/json' \\
+                      -d @payload.json
+                """
                     } else {
                         bat """
-                curl -X POST ${logstashUrl} ^
-                  -H "Content-Type: application/json" ^
-                  -d '${groovy.json.JsonOutput.toJson(payload)}'
+                    curl -v -X POST "${logstashUrl}" ^
+                      -H "Content-Type: application/json" ^
+                      -d @payload.json
                 """
                     }
                 }
