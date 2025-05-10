@@ -153,56 +153,56 @@ pipeline {
             }
         }
 
-//        stage('Deploy') {
-//            steps {
-//                sshagent([env.SSH_CRED_ID]) {
-//                    script {
-//                        switch (env.DEPLOY_TYPE) {
-//                            case 'nginx':
-//                                if (isUnix()) {
-//                                        sh """
-//                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
-//                                            echo "[*] Перезапуск NGINX"
-//                                            sudo systemctl restart nginx || sudo nginx
-//                                        '
-//                                    """
-//                                }
-//                                else {
-//                                    bat """
-//                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
-//                                            echo "[*] Перезапуск NGINX"
-//                                            sudo systemctl restart nginx || sudo nginx
-//                                        '
-//                                    """
-//                                }
-//                                break
-//
-//                            case 'elk':
-//                                sh """
-//                                    ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
-//                                        echo "[*] Перезапуск ELK"
-//                                        sudo systemctl restart elasticsearch
-//                                        sudo systemctl restart logstash
-//                                        sudo systemctl restart kibana
-//                                    '
-//                                """
-//                                break
-//                            default:
-//                                error "🚫 Неизвестный тип деплоя: ${env.DEPLOY_TYPE}"
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        stage('Deploy') {
+            steps {
+                sshagent([env.SSH_CRED_ID]) {
+                    script {
+                        switch (env.DEPLOY_TYPE) {
+                            case 'nginx':
+                                if (isUnix()) {
+                                        sh """
+                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                            echo "[*] Перезапуск NGINX"
+                                            sudo systemctl restart nginx || sudo nginx
+                                        '
+                                    """
+                                }
+                                else {
+                                    bat """
+                                        ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                            echo "[*] Перезапуск NGINX"
+                                            sudo systemctl restart nginx || sudo nginx
+                                        '
+                                    """
+                                }
+                                break
+
+                            case 'elk':
+                                sh """
+                                    ssh -o StrictHostKeyChecking=no ${env.SSH_CONNECT} '
+                                        echo "[*] Перезапуск ELK"
+                                        sudo systemctl restart elasticsearch
+                                        sudo systemctl restart logstash
+                                        sudo systemctl restart kibana
+                                    '
+                                """
+                                break
+                            default:
+                                error "🚫 Неизвестный тип деплоя: ${env.DEPLOY_TYPE}"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
-//        success {
-//            echo "✅ Успешный деплой для ${params.TARGET}"
-//        }
-//        failure {
-//            echo "❌ Ошибка при деплое на ${params.TARGET}"
-//        }
+        success {
+            echo "✅ Успешный деплой для ${params.TARGET}"
+        }
+        failure {
+            echo "❌ Ошибка при деплое на ${params.TARGET}"
+        }
         always {
             archiveArtifacts artifacts: '*.json', fingerprint: true
         }
