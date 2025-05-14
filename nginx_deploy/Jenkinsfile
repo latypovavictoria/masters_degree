@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'linux-docker-agent' }
+    agent { label 'jenkins-linux-agent' }
 
     parameters {
         string(name: 'TARGET', defaultValue: 'test.delta.sbrf.ru-nginx', description: 'Цель деплоя из файла hosts.yaml')
