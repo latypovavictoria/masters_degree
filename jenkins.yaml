@@ -25,5 +25,5 @@ credentials:
 
 unclassified:
   location:
-    url: "http://localhost:8080"
+    url: "http://host.docker.internal:8080"
     adminAddress: "admin@example.com"

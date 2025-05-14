@@ -2,7 +2,7 @@ pipeline {
     agent { label 'linux-docker-agent' }
 
     environment {
-        JENKINS_URL = 'http://localhost:8080'
+        JENKINS_URL = 'http://host.docker.internal:8080'
         JENKINS_USER = 'admin'
         JENKINS_TOKEN = credentials('token_admin')
     }
