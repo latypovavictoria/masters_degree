@@ -1,0 +1,61 @@
+pipeline {
+    agent {
+        label 'linux-docker-agent'
+    }
+
+    environment {
+        JENKINS_URL = 'http://jenkins:8080'
+        NVD_API_KEY = credentials('nvd_api_key')
+        TRIVY_SEVERITY = 'CRITICAL,HIGH'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/latypovavictoria/masters_degree.git',
+                     branch: 'main'
+            }
+        }
+
+        stage('Dependency Scan') {
+            steps {
+                dependencyCheck additionalArguments: """
+                    --scan ./src
+                    --format JSON
+                    --nvdApiKey $NVD_API_KEY
+                    --failOnCVSS 7
+                """, odcInstallation: 'OWASP-DC'
+
+                dependencyCheckPublisher pattern: 'dependency-check-report.json'
+            }
+        }
+
+        stage('Container Scan') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity $TRIVY_SEVERITY my-app:latest'
+                junit 'trivy-report.xml'
+            }
+        }
+
+        stage('Security Analysis') {
+            steps {
+                sh '''
+                    python3 security_check.py \
+                    --url $JENKINS_URL \
+                    --report security_report.json
+                '''
+                archiveArtifacts artifacts: 'security_report.json', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Security scan completed. See reports for details.'
+        }
+        failure {
+            slackSend channel: '#security-alerts',
+                     message: "Security check failed in ${env.JOB_NAME} (${env.BUILD_URL})"
+        }
+    }
+}
