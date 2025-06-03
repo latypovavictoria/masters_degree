@@ -3,9 +3,15 @@ pipeline {
         label 'linux-docker-agent'
     }
 
+    parameters {
+        string(name: 'NVD_API_KEY', defaultValue: '', description: 'API KEY for NVD')
+        string(name: 'CHECK_JENKINSFILE_PATH', defaultValue: 'Jenkinsfile_ot', description: 'Path to Jenkinsfile for analysis')
+    }
+
     environment {
-        JENKINS_URL = 'http://jenkins:8080'
-        NVD_API_KEY = credentials('nvd_api_key')
+        JENKINS_URL = 'http://host.docker.internal:8080'
+        JENKINS_USER = 'admin'
+        JENKINS_TOKEN = credentials('token_admin')
         TRIVY_SEVERITY = 'CRITICAL,HIGH'
     }
 
@@ -14,6 +20,24 @@ pipeline {
             steps {
                 git url: 'https://github.com/latypovavictoria/masters_degree.git',
                      branch: 'main'
+            }
+        }
+
+        stage('Install Python Requirements') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            python3 -m pip install --upgrade pip
+                            pip3 install requests
+                        '''
+                    } else {
+                        bat '''
+                            python -m pip install --upgrade pip
+                            pip install requests
+                        '''
+                    }
+                }
             }
         }
 
@@ -30,21 +54,19 @@ pipeline {
             }
         }
 
-        stage('Container Scan') {
+        stage('Run Security Check') {
             steps {
-                sh 'trivy image --exit-code 1 --severity $TRIVY_SEVERITY my-app:latest'
-                junit 'trivy-report.xml'
-            }
-        }
-
-        stage('Security Analysis') {
-            steps {
-                sh '''
-                    python3 security_check.py \
-                    --url $JENKINS_URL \
-                    --report security_report.json
-                '''
-                archiveArtifacts artifacts: 'security_report.json', fingerprint: true
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            python3 security_check.py "$JENKINS_URL" "$JENKINS_USER" "$JENKINS_TOKEN"
+                        '''
+                    } else {
+                        bat '''
+                            python security_check.py "%JENKINS_URL%" "%JENKINS_USER%" "%JENKINS_TOKEN%"
+                        '''
+                    }
+                }
             }
         }
     }
